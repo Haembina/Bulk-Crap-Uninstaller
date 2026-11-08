@@ -200,7 +200,8 @@ namespace BulkCrapUninstaller.Functions
 
                 if (targetList.Any())
                 {
-                    _lockApplication(true);
+                    // ShowDialog disables the owner while the wizard is open. Disabling every
+                    // child control here makes native controls fall back to light disabled colors.
 
                     IReadOnlyList<BulkUninstallEntry> taskEntries;
 
@@ -324,14 +325,14 @@ namespace BulkCrapUninstaller.Functions
 
             try
             {
-                _lockApplication(true);
-
+                // The operation is presented through modal dialogs, which disable the owner
+                // while open. Disabling each child control separately can make native controls
+                // fall back to light disabled colors in dark mode.
                 listRefreshNeeded = SearchForAndRemoveJunk(selectedUninstallers, allUninstallers);
             }
             finally
             {
                 ReleaseUninstallLock();
-                _lockApplication(false);
                 if (listRefreshNeeded)
                     _initiateListRefresh();
             }
