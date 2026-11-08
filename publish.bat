@@ -133,6 +133,10 @@ rem -------------------------------------------------------------
 set vswhere=%ProgramFiles(x86)%\Microsoft Visual Studio\Installer\vswhere.exe
 
 if exist "%vswhere%" (
+	for /f "delims=" %%I in ('"%vswhere%" -latest -products * -requires Microsoft.Component.MSBuild Microsoft.NetCore.Component.SDK -find MSBuild\**\Bin\amd64\MSBuild.exe') do (
+		set msbuild="%~fI"
+		goto :eof
+	)
 	for /f "delims=" %%I in ('"%vswhere%" -latest -products * -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\amd64\MSBuild.exe') do (
 		set msbuild="%%~fI"
 		goto :eof
