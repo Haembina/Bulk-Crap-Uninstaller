@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Windows.Forms;
 using BulkCrapUninstaller.Functions.ApplicationList;
+using BulkCrapUninstaller.Functions.Tools;
 using Klocman.Forms.Tools;
 
 namespace BulkCrapUninstaller.Controls
@@ -28,14 +29,26 @@ namespace BulkCrapUninstaller.Controls
             UpdateColors();
         }
 
-        private void UpdateColors()
+        internal void UpdateColors()
         {
-            flowLayoutPanellabelInvalid.BackColor = ApplicationListConstants.Colors.InvalidColor;
-            flowLayoutPanellabelOrphaned.BackColor = ApplicationListConstants.Colors.UnregisteredColor;
-            flowLayoutPanellabelUnverified.BackColor = ApplicationListConstants.Colors.UnverifiedColor;
-            flowLayoutPanellabelVerified.BackColor = ApplicationListConstants.Colors.VerifiedColor;
-            flowLayoutPanellabelWinFeature.BackColor = ApplicationListConstants.Colors.WindowsFeatureColor;
-            flowLayoutPanellabelStoreApp.BackColor = ApplicationListConstants.Colors.WindowsStoreAppColor;
+            var dark = AppTheme.IsDark;
+            BackColor = dark ? Color.FromArgb(32, 32, 32) : (Enabled ? SystemColors.ControlLightLight : SystemColors.Control);
+            labelLegend.BackColor = dark ? Color.FromArgb(45, 45, 48) : SystemColors.Control;
+            labelLegend.ForeColor = dark ? Color.FromArgb(235, 235, 235) : SystemColors.ControlText;
+
+            ApplyItemColor(flowLayoutPanellabelInvalid, labelInvalid, ApplicationListConstants.Colors.InvalidColor, dark);
+            ApplyItemColor(flowLayoutPanellabelOrphaned, labelOrphaned, ApplicationListConstants.Colors.UnregisteredColor, dark);
+            ApplyItemColor(flowLayoutPanellabelUnverified, labelUnverified, ApplicationListConstants.Colors.UnverifiedColor, dark);
+            ApplyItemColor(flowLayoutPanellabelVerified, labelVerified, ApplicationListConstants.Colors.VerifiedColor, dark);
+            ApplyItemColor(flowLayoutPanellabelWinFeature, labelWinFeature, ApplicationListConstants.Colors.WindowsFeatureColor, dark);
+            ApplyItemColor(flowLayoutPanellabelStoreApp, labelStoreApp, ApplicationListConstants.Colors.WindowsStoreAppColor, dark);
+        }
+
+        private static void ApplyItemColor(Panel panel, Label label, Color color, bool dark)
+        {
+            var backColor = AppTheme.GetListHighlightBackColor(color, dark);
+            panel.BackColor = backColor;
+            label.ForeColor = AppTheme.GetReadableTextColor(backColor);
         }
 
         [Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
@@ -85,7 +98,7 @@ namespace BulkCrapUninstaller.Controls
 
         private void ThisEnabledChanged(object sender, EventArgs e)
         {
-            BackColor = Enabled ? SystemColors.ControlLightLight : SystemColors.Control;
+            UpdateColors();
         }
 
         public event EventHandler CloseRequested;

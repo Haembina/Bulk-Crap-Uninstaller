@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -36,7 +36,7 @@ namespace UninstallTools.Dialogs
             listView1.FormatRow += (sender, args) =>
             {
                 if (args.Model is StartupEntryBase seb)
-                    args.Item.ForeColor = seb.Disabled ? SystemColors.GrayText : SystemColors.ControlText;
+                    args.Item.ForeColor = seb.Disabled ? SystemColors.GrayText : listView1.ForeColor;
             };
         }
 

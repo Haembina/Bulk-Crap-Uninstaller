@@ -80,5 +80,15 @@ namespace BulkCrapUninstallerTests.Functions
             Assert.AreEqual(SystemColors.Window, AppTheme.GetDefaultListItemBackColor(false));
             Assert.AreEqual(SystemColors.WindowText, AppTheme.GetDefaultListItemForeColor(false));
         }
+
+        [TestMethod]
+        public void DarkModeMutesTreemapColorsAndPreservesLightModeTreemapColors()
+        {
+            var darkTile = AppTheme.GetTreemapColor(Color.PaleGreen, true);
+
+            Assert.IsTrue(darkTile.R < 150);
+            Assert.IsTrue(darkTile.G < 150);
+            Assert.AreEqual(Color.PaleGreen, AppTheme.GetTreemapColor(Color.PaleGreen, false));
+        }
     }
 }

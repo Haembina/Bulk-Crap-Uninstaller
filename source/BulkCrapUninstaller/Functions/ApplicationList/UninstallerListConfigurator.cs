@@ -254,6 +254,7 @@ namespace BulkCrapUninstaller.Functions.ApplicationList
         {
             if (e.Model is not ApplicationUninstallerEntry entry) return;
 
+            e.Item.UseItemStyleForSubItems = true;
             e.Item.BackColor = AppTheme.GetDefaultListItemBackColor(AppTheme.IsDark);
             e.Item.ForeColor = AppTheme.GetDefaultListItemForeColor(AppTheme.IsDark);
 

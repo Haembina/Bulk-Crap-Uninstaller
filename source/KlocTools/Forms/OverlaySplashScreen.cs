@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -17,6 +17,8 @@ namespace Klocman.Forms
         public OverlaySplashScreen(Form owner, Image shownImage) : this()
         {
             _owner = owner;
+            BackColor = _owner.BackColor;
+            startupSplashPictureBox.BackColor = _owner.BackColor;
             startupSplashPictureBox.Image = shownImage;
             Icon = _owner.Icon;
 

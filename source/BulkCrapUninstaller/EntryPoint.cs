@@ -59,6 +59,7 @@ namespace BulkCrapUninstaller
                     }
 
                     SetupDependancies();
+                    Functions.Tools.AppTheme.InitializeNativeTheme();
 
                     if(Properties.Settings.Default.WindowDpiAware)
                         Application.SetHighDpiMode(HighDpiMode.PerMonitorV2);

@@ -101,7 +101,7 @@ namespace BulkCrapUninstaller.Functions.ApplicationList
             else
                 color = Color.White;
 
-            return AppTheme.GetListHighlightBackColor(color, AppTheme.IsDark);
+            return AppTheme.GetTreemapColor(color, AppTheme.IsDark);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -177,6 +177,7 @@ namespace BulkCrapUninstaller.Forms
 
             _styleController = new WindowStyleController(this);
             _styleController.SetStyles(_setMan.Selected.Settings.WindowUseSystemTheme);
+            AppTheme.ApplyToForm(this);
 
             // Initialize the status bar
             toolStripLabelStatus_TextChanged(this, EventArgs.Empty);
@@ -599,8 +600,11 @@ namespace BulkCrapUninstaller.Forms
                 x => x.ToolbarsShowSettings, this);
             settings.Subscribe((x, y) => toolStrip.Visible = y.NewValue,
                 x => x.ToolbarsShowToolbar, this);
-            settings.Subscribe((x, y) => _styleController.SetStyles(y.NewValue),
-                x => x.WindowUseSystemTheme, this);
+            settings.Subscribe((x, y) =>
+            {
+                _styleController.SetStyles(y.NewValue);
+                AppTheme.ApplyToForm(this);
+            }, x => x.WindowUseSystemTheme, this);
             settings.Subscribe((x, y) => AppTheme.SetThemePreference(AppTheme.ParseThemePreference(y.NewValue)),
                 x => x.WindowThemePreference, this);
             settings.Subscribe((x, y) => statusStrip1.Visible = y.NewValue,
@@ -872,6 +876,7 @@ namespace BulkCrapUninstaller.Forms
 
             _listLegendWindow.Show(this);
             AddOwnedForm(_listLegendWindow);
+            AppTheme.ApplyToForm(_listLegendWindow);
 
             _listLegendWindow.UpdatePosition(uninstallerObjectListView);
             listViewPanel.Resize += (o, args) => _listLegendWindow.UpdatePosition(uninstallerObjectListView);

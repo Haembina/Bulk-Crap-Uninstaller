@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -59,7 +59,7 @@ namespace BulkCrapUninstaller.Controls
             sb.Subscribe((sender, args) => checkBoxGenerateStuck.Enabled = args.NewValue, settings => settings.QuietAutomatization, this);
         
             sb.Subscribe(
-                (x, y) => checkBoxSimulate.ForeColor = y.NewValue ? Color.OrangeRed : SystemColors.ControlText,
+                (x, y) => checkBoxSimulate.ForeColor = y.NewValue ? Color.OrangeRed : Functions.Tools.AppTheme.GetDefaultListItemForeColor(Functions.Tools.AppTheme.IsDark),
                 x => x.AdvancedSimulate, this);
         
             sb.SendUpdates(this);

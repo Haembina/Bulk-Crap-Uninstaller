@@ -91,6 +91,7 @@ namespace SimpleTreeMap
         public TreeMap()
         {
             InitializeComponent();
+            BackColor = Color.Black;
 
             SetStyle(ControlStyles.ResizeRedraw, true);
             SetStyle(ControlStyles.DoubleBuffer, true);
@@ -183,7 +184,8 @@ namespace SimpleTreeMap
             //var font = new Font("Arial", 8);
             var gfx = e.Graphics;
 
-            gfx.FillRectangle(new SolidBrush(Color.Black), ClientRectangle);
+            using (var borderBrush = new SolidBrush(BackColor))
+                gfx.FillRectangle(borderBrush, ClientRectangle);
 
             if (_rectangles == null)
             {
@@ -311,6 +313,22 @@ namespace SimpleTreeMap
         {
             _selectedObjects = new HashSet<object>(objects);
             Refresh();
+        }
+
+        public void RefreshColors()
+        {
+            if (Disposing || IsDisposed || _currentSlice == null || ObjectColorGetter == null) return;
+
+            foreach (var element in _currentSlice.Elements)
+            {
+                element.Color = ObjectColorGetter.Invoke(element.Object);
+                if (element.Color.IsEmpty)
+                    element.Color = BackColor;
+                if (!_brushCache.ContainsKey(element.Color))
+                    _brushCache[element.Color] = new SolidBrush(element.Color);
+            }
+
+            Invalidate();
         }
 
         private void UpdateRectangles()

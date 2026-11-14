@@ -1,4 +1,4 @@
-﻿/*
+/*
  * FilterMenuBuilder - Responsible for creating a Filter menu
  *
  * Author: Phillip Piper
@@ -211,6 +211,10 @@ namespace BrightIdeasSoftware {
         /// <returns></returns>
         virtual protected ToolStripMenuItem CreateFilteringMenuItem(OLVColumn column, List<ICluster> clusters) {
             ToolStripCheckedListBox checkedList = new ToolStripCheckedListBox();
+            if (column.ListView != null) {
+                checkedList.BackColor = column.ListView.BackColor;
+                checkedList.ForeColor = column.ListView.ForeColor;
+            }
             checkedList.Tag = column;
             foreach (ICluster cluster in clusters)
                 checkedList.AddItem(cluster, column.ValuesChosenForFiltering.Contains(cluster.ClusterKey));

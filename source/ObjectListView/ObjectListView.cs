@@ -6464,11 +6464,13 @@ namespace BrightIdeasSoftware
             //System.Diagnostics.Debug.WriteLine(String.Format("cd: {0:x}, {1}, {2}", nmcustomdraw.nmcd.dwDrawStage, nmcustomdraw.dwItemType, nmcustomdraw.nmcd.dwItemSpec));
 
             // Native list-view group headers ignore their custom color fields on current Windows.
-            // Draw them at ITEMPREPAINT so the group rectangle is available, and let .NET/native
-            // processing continue for every other custom-draw stage.
+            // Draw them during group custom-draw stages (PREPAINT/POSTPAINT/ITEMPREPAINT) using the
+            // group header rectangle from LVM_GETGROUPRECT, rcText, or nmcd.rc.
             if (nmcustomdraw.dwItemType == 1)
             {
-                if (nmcustomdraw.nmcd.dwDrawStage == CDDS_ITEMPREPAINT &&
+                if ((nmcustomdraw.nmcd.dwDrawStage == CDDS_PREPAINT ||
+                     nmcustomdraw.nmcd.dwDrawStage == CDDS_POSTPAINT ||
+                     nmcustomdraw.nmcd.dwDrawStage == CDDS_ITEMPREPAINT) &&
                     GroupHeaderBackColor.HasValue && GroupHeaderForeColor.HasValue)
                 {
                     var groupId = nmcustomdraw.nmcd.dwItemSpec.ToInt32();
@@ -6478,8 +6480,23 @@ namespace BrightIdeasSoftware
                     // instead of the internal ListViewGroup ID.
                     if (group == null && groups != null && groupId >= 0 && groupId < groups.Count)
                         group = groups[groupId];
-                    var bounds = Rectangle.FromLTRB(nmcustomdraw.nmcd.rc.left, nmcustomdraw.nmcd.rc.top,
-                        nmcustomdraw.nmcd.rc.right, nmcustomdraw.nmcd.rc.bottom);
+
+                    var bounds = Rectangle.Empty;
+                    if (group != null && IsHandleCreated)
+                    {
+                        var groupRect = new NativeMethods.RECT { top = 1 };
+                        if (NativeMethods.SendMessageRECT(Handle, 0x1062, group.GroupId, ref groupRect) != IntPtr.Zero)
+                            bounds = Rectangle.FromLTRB(groupRect.left, groupRect.top, groupRect.right, groupRect.bottom);
+                    }
+                    if (bounds.Width <= 0 || bounds.Height <= 0)
+                        bounds = Rectangle.FromLTRB(nmcustomdraw.rcText.left, nmcustomdraw.rcText.top,
+                            nmcustomdraw.rcText.right, nmcustomdraw.rcText.bottom);
+                    if (bounds.Width <= 0 || bounds.Height <= 0)
+                        bounds = Rectangle.FromLTRB(nmcustomdraw.nmcd.rc.left, nmcustomdraw.nmcd.rc.top,
+                            nmcustomdraw.nmcd.rc.right, nmcustomdraw.nmcd.rc.bottom);
+                    if (IsHandleCreated && bounds.Width > 0 && ClientSize.Width > bounds.Right)
+                        bounds.Width = ClientSize.Width - bounds.Left;
+
                     if (group != null && bounds.Width > 0 && bounds.Height > 0)
                     {
                         using (var graphics = Graphics.FromHdc(nmcustomdraw.nmcd.hdc))
@@ -6488,7 +6505,7 @@ namespace BrightIdeasSoftware
                         using (var groupFont = new Font(Font, FontStyle.Bold))
                         {
                             graphics.FillRectangle(background, bounds);
-                            var textBounds = Rectangle.Inflate(bounds, -8, 0);
+                            var textBounds = new Rectangle(bounds.Left + 8, bounds.Top, Math.Max(0, bounds.Width - 16), bounds.Height);
                             TextRenderer.DrawText(graphics, group.Header, groupFont, textBounds,
                                 GroupHeaderForeColor.Value,
                                 TextFormatFlags.Left | TextFormatFlags.VerticalCenter |
@@ -6496,7 +6513,9 @@ namespace BrightIdeasSoftware
                             graphics.DrawLine(border, bounds.Left, bounds.Bottom - 1,
                                 bounds.Right, bounds.Bottom - 1);
                         }
-                        m.Result = (IntPtr)CDRF_SKIPDEFAULT;
+                        m.Result = (IntPtr)(nmcustomdraw.nmcd.dwDrawStage == CDDS_PREPAINT
+                            ? (CDRF_SKIPDEFAULT | CDRF_NOTIFYPOSTPAINT)
+                            : CDRF_SKIPDEFAULT);
                         return true;
                     }
                 }

@@ -82,6 +82,7 @@ namespace BulkCrapUninstaller.Forms
             _settings.SendUpdates(this);
 
             UpdatePageEnabledState();
+            Functions.Tools.AppTheme.ApplyToForm(this);
         }
 
         private void buttonLanguageApply_Click(object sender, EventArgs e)
