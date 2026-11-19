@@ -397,6 +397,7 @@ namespace UninstallTools.Factory
         {
             var startInfo = MakeScoopCommand(scoopArgs).ToProcessStartInfo();
             startInfo.UseShellExecute = false;
+            startInfo.RedirectStandardInput = true;
             startInfo.RedirectStandardOutput = true;
             startInfo.RedirectStandardError = false;
             startInfo.CreateNoWindow = true;
@@ -404,16 +405,18 @@ namespace UninstallTools.Factory
 
             using (var process = Process.Start(startInfo))
             {
+                process?.StandardInput.Close();
                 var sw = Stopwatch.StartNew();
                 var output = process?.StandardOutput.ReadToEnd();
+                process?.WaitForExit();
                 Trace.WriteLine($"[Performance] Running command {startInfo.FileName} {startInfo.Arguments} took {sw.ElapsedMilliseconds}ms");
-                return output;
+                return process?.ExitCode == 0 ? output : null;
             }
         }
 
         private static ProcessStartCommand MakeScoopCommand(string scoopArgs)
         {
-            return new ProcessStartCommand(_powershellPath, $"-NoProfile -ex unrestricted \"{_scriptPath}\" {scoopArgs}");
+            return new ProcessStartCommand(_powershellPath, $"-NoProfile -ex unrestricted -File \"{_scriptPath}\" {scoopArgs}");
         }
 
 
