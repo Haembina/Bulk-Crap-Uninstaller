@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -452,10 +452,8 @@ namespace BulkCrapUninstaller.Functions
 
             try
             {
-                _lockApplication(true);
-
                 var junk = new List<IJunkResult>();
-                var error = LoadingDialog.ShowDialog(null, Localisable.LoadingDialogTitleLookingForJunk,
+                var error = LoadingDialog.ShowDialog(MessageBoxes.DefaultOwner, Localisable.LoadingDialogTitleLookingForJunk,
                     x => junk.AddRange(JunkManager.FindProgramFilesJunk(allUninstallers.Where(y => y.RegKeyStillExists()).ToList())));
 
                 if (error != null)
@@ -479,8 +477,6 @@ namespace BulkCrapUninstaller.Functions
 
             try
             {
-                _lockApplication(true);
-
                 var results = selectedUninstallers.Take(2).ToList();
 
                 if (results.Count != 1)
@@ -738,8 +734,6 @@ namespace BulkCrapUninstaller.Functions
 
             try
             {
-                _lockApplication(true);
-
                 var results = selectedUninstallers.Take(2).ToList();
 
                 if (results.Count != 1)

@@ -26,6 +26,7 @@ namespace BulkCrapUninstaller.Forms
         public TargetWindow()
         {
             InitializeComponent();
+            Functions.Tools.AppTheme.ApplyToForm(this);
 
             fileTargeter1.DirectoriesSelected += DirectoryTargeterDirectoriesSelected;
             windowTargeter1.PickingStarted += WindowTargeter1OnPickingStarted;

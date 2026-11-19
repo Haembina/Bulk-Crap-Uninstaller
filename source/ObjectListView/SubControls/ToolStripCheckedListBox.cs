@@ -36,6 +36,9 @@ namespace BrightIdeasSoftware {
     /// </summary>
     public class ToolStripCheckedListBox : ToolStripControlHost {
 
+        [System.Runtime.InteropServices.DllImport("uxtheme.dll", CharSet = System.Runtime.InteropServices.CharSet.Unicode)]
+        private static extern int SetWindowTheme(System.IntPtr hWnd, string pszSubAppName, string pszSubIdList);
+
         /// <summary>
         /// Create a ToolStripCheckedListBox
         /// </summary>
@@ -45,6 +48,11 @@ namespace BrightIdeasSoftware {
             CheckedListBoxControl.ThreeDCheckBoxes = true;
             CheckedListBoxControl.CheckOnClick = true;
             CheckedListBoxControl.SelectionMode = SelectionMode.One;
+            CheckedListBoxControl.BorderStyle = BorderStyle.FixedSingle;
+            CheckedListBoxControl.HandleCreated += (s, e) => {
+                bool isDark = CheckedListBoxControl.BackColor.R * 299 + CheckedListBoxControl.BackColor.G * 587 + CheckedListBoxControl.BackColor.B * 114 < 145000;
+                SetWindowTheme(CheckedListBoxControl.Handle, isDark ? "DarkMode_Explorer" : "Explorer", null);
+            };
         }
 
         /// <summary>

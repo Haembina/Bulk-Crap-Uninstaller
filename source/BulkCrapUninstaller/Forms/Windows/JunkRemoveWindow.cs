@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -64,7 +64,6 @@ namespace BulkCrapUninstaller.Forms
 
         private void buttonAccept_Click(object sender, EventArgs e)
         {
-            Enabled = false;
             try
             {
                 var filters = SelectedJunk.OfType<FileSystemJunk>().Select(x => x.Path.FullName).Distinct().ToArray();
@@ -137,7 +136,6 @@ namespace BulkCrapUninstaller.Forms
             }
             finally
             {
-                Enabled = true;
             }
         }
 

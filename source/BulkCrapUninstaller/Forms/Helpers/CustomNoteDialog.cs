@@ -21,6 +21,7 @@ namespace BulkCrapUninstaller.Forms
         private CustomNoteDialog()
         {
             InitializeComponent();
+            Functions.Tools.AppTheme.ApplyToForm(this);
         }
     }
 }

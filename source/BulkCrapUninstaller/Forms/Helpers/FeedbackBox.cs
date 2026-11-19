@@ -37,6 +37,7 @@ namespace BulkCrapUninstaller.Forms
 
             Settings.Default.SettingBinder.BindControl(checkBoxNeverShow, x => x.MiscFeedbackNagNeverShow, this);
             Settings.Default.SettingBinder.SendUpdates(this);
+            Functions.Tools.AppTheme.ApplyToForm(this);
         }
 
         private void buttonSendFeedback2_Click(object sender, EventArgs e)

@@ -16,6 +16,7 @@ namespace Klocman.Forms
 
             processWaiterControl1.AllProcessesClosed += ProcessWaiterControl1_AllProcessesClosed;
             processWaiterControl1.CancelClicked += ProcessWaiterControl1_CancelClicked;
+            Tools.WindowStyleController.GlobalFormThemer?.Invoke(this);
         }
 
         private void ProcessWaiterControl1_CancelClicked(object sender, EventArgs e)

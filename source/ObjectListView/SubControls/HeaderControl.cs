@@ -622,6 +622,14 @@ namespace BrightIdeasSoftware {
             switch (nmcustomdraw.dwDrawStage) {
                 case CDDS_PREPAINT:
                     cachedNeedsCustomDraw = NeedsCustomDraw();
+                    if (cachedNeedsCustomDraw && nmcustomdraw.hdc != IntPtr.Zero &&
+                        ListView?.HeaderFormatStyle?.Normal != null &&
+                        !ListView.HeaderFormatStyle.Normal.BackColor.IsEmpty) {
+                        using (Graphics g = Graphics.FromHdc(nmcustomdraw.hdc))
+                        using (Brush b = new SolidBrush(ListView.HeaderFormatStyle.Normal.BackColor)) {
+                            g.FillRectangle(b, ClientRectangle);
+                        }
+                    }
                     m.Result = (IntPtr) CDRF_NOTIFYITEMDRAW;
                     return true;
 
@@ -1021,7 +1029,12 @@ namespace BrightIdeasSoftware {
                 pts[2].Offset(midX + deltaX, midY - deltaY);
             }
 
-            g.FillPolygon(Brushes.SlateGray, pts);
+            Color arrowColor = (ListView?.HeaderFormatStyle?.Normal != null && !ListView.HeaderFormatStyle.Normal.ForeColor.IsEmpty)
+                ? ListView.HeaderFormatStyle.Normal.ForeColor
+                : Color.SlateGray;
+            using (Brush arrowBrush = new SolidBrush(arrowColor)) {
+                g.FillPolygon(arrowBrush, pts);
+            }
             r.Width -= triangleWidth;
             return r;
         }

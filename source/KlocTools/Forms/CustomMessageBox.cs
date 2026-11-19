@@ -115,6 +115,7 @@ namespace Klocman.Forms
             TopMost = settings.AlwaysOnTop;
 
             _overrideIcon = settings.WindowIcon;
+            Tools.WindowStyleController.GlobalFormThemer?.Invoke(this);
         }
 
         internal bool Checked => checkBox1.Checked;

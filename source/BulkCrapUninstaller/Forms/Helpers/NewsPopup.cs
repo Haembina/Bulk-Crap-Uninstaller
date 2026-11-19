@@ -24,6 +24,7 @@ namespace BulkCrapUninstaller.Forms
 
             Settings.Default.SettingBinder.BindControl(checkBoxNeverShow, settings => settings.MiscFeedbackNagNeverShow, this);
             Settings.Default.SettingBinder.SendUpdates(this);
+            Functions.Tools.AppTheme.ApplyToForm(this);
         }
 
         public static void ShowPopup(Form owner)

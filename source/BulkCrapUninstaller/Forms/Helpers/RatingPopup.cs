@@ -17,6 +17,7 @@ namespace BulkCrapUninstaller.Forms
         private RatingPopup()
         {
             InitializeComponent();
+            Functions.Tools.AppTheme.ApplyToForm(this);
         }
 
         public static UninstallerRating ShowRateDialog(Form owner, string applicationName)

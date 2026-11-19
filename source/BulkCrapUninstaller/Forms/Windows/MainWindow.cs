@@ -93,10 +93,6 @@ namespace BulkCrapUninstaller.Forms
 
             // Finish up setting controls and window, suspend after settings have loaded
             SuspendLayout();
-            ToolStripManager.Renderer = new ToolStripProfessionalRenderer(new StandardSystemColorTable())
-            {
-                RoundedEdges = true
-            };
 
             // Disable until the first list refresh finishes
             LockApplication(true);
@@ -675,9 +671,7 @@ namespace BulkCrapUninstaller.Forms
         {
             if (WindowsTools.IsNetworkAvailable())
             {
-                LockApplication(true);
                 UpdateGrabber.LookForUpdates();
-                LockApplication(false);
             }
             else
                 MessageBoxes.NoNetworkConnected();
@@ -881,7 +875,6 @@ namespace BulkCrapUninstaller.Forms
             _listLegendWindow.UpdatePosition(uninstallerObjectListView);
             listViewPanel.Resize += (o, args) => _listLegendWindow.UpdatePosition(uninstallerObjectListView);
             Move += (o, args) => _listLegendWindow.UpdatePosition(uninstallerObjectListView);
-            Controls[0].EnabledChanged += (o, args) => _listLegendWindow.Enabled = Controls[0].Enabled;
 
             var settings = _setMan.Selected;
             settings.Subscribe((x, y) => _listLegendWindow.Visible = y.NewValue, x => x.UninstallerListShowLegend, this);
@@ -1899,7 +1892,6 @@ namespace BulkCrapUninstaller.Forms
 
         private void createRestorePointToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            LockApplication(true);
             try
             {
                 SystemRestore.BeginSysRestore(0, false, this);
@@ -1907,10 +1899,6 @@ namespace BulkCrapUninstaller.Forms
             catch (Exception exception)
             {
                 PremadeDialogs.GenericError(exception);
-            }
-            finally
-            {
-                LockApplication(false);
             }
         }
 

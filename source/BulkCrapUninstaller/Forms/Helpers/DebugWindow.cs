@@ -56,6 +56,7 @@ namespace BulkCrapUninstaller.Forms
 
             checkBox2.Checked = Program.IsInstalled;
             checkBoxSysRestoreAvail.Checked = SysRestore.SysRestoreAvailable();
+            Functions.Tools.AppTheme.ApplyToForm(this);
         }
 
         private void button13_Click(object sender, EventArgs e)

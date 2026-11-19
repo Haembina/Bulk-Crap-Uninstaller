@@ -32,10 +32,20 @@ namespace Klocman.Controls
         private void LineSeparator_Paint(object sender, PaintEventArgs e)
         {
             var g = e.Graphics;
-
-            g.DrawLine(Pens.DarkGray, new Point(0, 0), new Point(Width, 0));
-
-            g.DrawLine(Pens.White, new Point(0, 1), new Point(Width, 1));
+            var bg = Parent?.BackColor ?? BackColor;
+            var isDark = bg.R * 299 + bg.G * 587 + bg.B * 114 < 145000;
+            if (isDark)
+            {
+                using var topPen = new Pen(Color.FromArgb(72, 72, 78));
+                using var bottomPen = new Pen(Color.FromArgb(40, 40, 44));
+                g.DrawLine(topPen, new Point(0, 0), new Point(Width, 0));
+                g.DrawLine(bottomPen, new Point(0, 1), new Point(Width, 1));
+            }
+            else
+            {
+                g.DrawLine(Pens.DarkGray, new Point(0, 0), new Point(Width, 0));
+                g.DrawLine(Pens.White, new Point(0, 1), new Point(Width, 1));
+            }
         }
 
         #endregion Methods

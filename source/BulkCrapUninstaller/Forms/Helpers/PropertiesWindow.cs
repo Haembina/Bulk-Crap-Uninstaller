@@ -1,4 +1,4 @@
-﻿/*
+/*
     Copyright (c) 2017 Marcin Szeniak (https://github.com/Klocman/)
     Apache License Version 2.0
 */
@@ -65,6 +65,7 @@ namespace BulkCrapUninstaller.Forms
             tabControl1.TabPages.Clear();
             applicationUninstallerEntries.OrderBy(x => x.DisplayName)
                 .ForEach(x => tabControl1.TabPages.Add(new TabPage(x.DisplayName) {Tag = x}));
+            AppTheme.ApplyToForm(this);
 
             OnSelectedTabChanged(this, EventArgs.Empty);
 

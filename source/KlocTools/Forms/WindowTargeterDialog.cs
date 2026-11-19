@@ -18,6 +18,7 @@ namespace Klocman.Forms
             InitializeComponent();
 
             windowTargeter1.WindowSelected += OnWindowSelected;
+            Tools.WindowStyleController.GlobalFormThemer?.Invoke(this);
         }
 
         public static WindowHoverSearcher.WindowInfo ShowDialog(IWin32Window owner, bool useCursorPos)

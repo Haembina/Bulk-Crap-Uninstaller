@@ -6530,6 +6530,15 @@ namespace BrightIdeasSoftware
                     if (prePaintLevel == 0)
                         drawnItems = new List<OLVListItem>();
 
+                    if (!Enabled && nmcustomdraw.nmcd.hdc != IntPtr.Zero)
+                    {
+                        using (Graphics g = Graphics.FromHdc(nmcustomdraw.nmcd.hdc))
+                        using (Brush b = new SolidBrush(BackColor))
+                        {
+                            g.FillRectangle(b, ClientRectangle);
+                        }
+                    }
+
                     // If there are any items, we have to wait until at least one has been painted
                     // before we draw the overlays. If there aren't any items, there will never be any
                     // item paint events, so we can draw the overlays whenever
@@ -7656,7 +7665,11 @@ namespace BrightIdeasSoftware
         /// <returns>The toolstrip that should be displayed</returns>
         protected virtual ToolStripDropDown MakeHeaderRightClickMenu(int columnIndex)
         {
-            ToolStripDropDown m = new ContextMenuStrip();
+            ToolStripDropDown m = new ContextMenuStrip
+            {
+                BackColor = BackColor,
+                ForeColor = ForeColor
+            };
 
             if (columnIndex >= 0 && UseFiltering && ShowFilterMenuOnRightClick)
                 m = MakeFilteringMenu(m, columnIndex);
@@ -10511,6 +10524,11 @@ namespace BrightIdeasSoftware
 
             // The event handler may have completely changed the control, so we need to remember it
             cellEditor = CellEditEventArgs.Control;
+            if (cellEditor != null && (BackColor.R * 299 + BackColor.G * 587 + BackColor.B * 114 < 145000))
+            {
+                cellEditor.BackColor = BackColor;
+                cellEditor.ForeColor = ForeColor;
+            }
 
             Invalidate();
             Controls.Add(cellEditor);

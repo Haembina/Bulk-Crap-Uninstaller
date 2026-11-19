@@ -21,6 +21,7 @@ namespace BulkCrapUninstaller.Forms
         public AboutBox()
         {
             InitializeComponent();
+            Functions.Tools.AppTheme.ApplyToForm(this);
             labelVersion.Text += AssemblyVersion;
             labelCopyright.Text = AssemblyCopyright;
             labelCompanyName.Text = AssemblyCompany;

@@ -69,8 +69,7 @@ namespace BulkCrapUninstaller.Forms
             Opacity = 0;
 
             Icon = Resources.Icon_Logo;
-
-            toolStrip1.Renderer = new ToolStripProfessionalRenderer(new StandardSystemColorTable());
+            Functions.Tools.AppTheme.ApplyToForm(this);
 
             var windowHandle = Handle;
             // Shutdown blocking not available below Windows Vista
@@ -246,9 +245,6 @@ namespace BulkCrapUninstaller.Forms
                         (x.CurrentStatus == UninstallStatus.Waiting || x.CurrentStatus == UninstallStatus.Uninstalling)))
                 {
                     _walkAwayBox = MessageBoxes.CanWalkAwayInfo(this);
-
-                    Enabled = false;
-                    _walkAwayBox.FormClosed += (x1, y1) => Enabled = true;
                 }
 
                 buttonClose.Enabled = true;

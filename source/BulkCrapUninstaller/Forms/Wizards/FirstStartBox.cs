@@ -213,7 +213,7 @@ namespace BulkCrapUninstaller.Forms
             {
                 var page = _pages[index];
                 var current = index == _pageNumber;
-                page.Enabled = current;
+                page.Enabled = true;
                 if (current) page.Focus();
             }
         }

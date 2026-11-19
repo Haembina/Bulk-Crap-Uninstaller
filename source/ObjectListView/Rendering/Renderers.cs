@@ -920,8 +920,14 @@ namespace BrightIdeasSoftware {
         /// </summary>
         /// <returns>The background color of the subitem</returns>
         public virtual Color GetBackgroundColor() {
-            if (!ListView.Enabled)
-                return SystemColors.Control;
+            if (!ListView.Enabled) {
+                Color disabledBack = (SubItem == null || ListItem.UseItemStyleForSubItems)
+                    ? ListItem.BackColor
+                    : SubItem.BackColor;
+                if (disabledBack.IsEmpty || disabledBack == SystemColors.Window)
+                    disabledBack = ListView.BackColor;
+                return disabledBack.IsEmpty ? SystemColors.Control : disabledBack;
+            }
 
             if (IsItemSelected && !ListView.UseTranslucentSelection && ListView.FullRowSelect)
                 return GetSelectedBackgroundColor();
@@ -956,7 +962,27 @@ namespace BrightIdeasSoftware {
                 (ColumnIsPrimary || ListView.FullRowSelect)) 
                 return GetSelectedForegroundColor();
 
-            return SubItem == null || ListItem.UseItemStyleForSubItems ? ListItem.ForeColor : SubItem.ForeColor;
+            Color foreColor;
+            if (Column != null && Column.Hyperlink && ListView != null && ListView.UseHyperlinks &&
+                ListView.HyperlinkStyle != null && !ListView.HyperlinkStyle.Normal.ForeColor.IsEmpty &&
+                SubItem != null && !string.IsNullOrEmpty(SubItem.Url))
+            {
+                foreColor = ListView.HyperlinkStyle.Normal.ForeColor;
+            }
+            else
+            {
+                foreColor = SubItem == null || ListItem.UseItemStyleForSubItems ? ListItem.ForeColor : SubItem.ForeColor;
+            }
+
+            if (ListView != null && (!ListView.Enabled || (ListItem != null && !ListItem.Enabled))) {
+                Color backColor = GetBackgroundColor();
+                return Color.FromArgb(
+                    (foreColor.R * 3 + backColor.R) / 4,
+                    (foreColor.G * 3 + backColor.G) / 4,
+                    (foreColor.B * 3 + backColor.B) / 4);
+            }
+
+            return foreColor;
         }
 
         /// <summary>
@@ -2038,18 +2064,30 @@ namespace BrightIdeasSoftware {
         /// <param name="width"></param>
         /// <param name="height"></param>
         protected virtual void DrawSubstringFrame(Graphics g, float x, float y, float width, float height) {
-            if (UseRoundedRectangle) {
-                using (GraphicsPath path = GetRoundedRect(x, y, width, height, 3.0f)) {
-                    if (FillBrush != null)
-                        g.FillPath(FillBrush, path);
-                    if (FramePen != null)
-                        g.DrawPath(FramePen, path);
+            bool isDarkSurface = ListView != null && (ListView.BackColor.R * 299 + ListView.BackColor.G * 587 + ListView.BackColor.B * 114 < 145000);
+            Brush activeFill = (isDarkSurface && FillBrush == Brushes.Yellow)
+                ? new SolidBrush(Color.FromArgb(145, 105, 18))
+                : FillBrush;
+            Pen activePen = (isDarkSurface && FramePen == Pens.DarkGreen)
+                ? new Pen(Color.FromArgb(215, 170, 55))
+                : FramePen;
+            try {
+                if (UseRoundedRectangle) {
+                    using (GraphicsPath path = GetRoundedRect(x, y, width, height, 3.0f)) {
+                        if (activeFill != null)
+                            g.FillPath(activeFill, path);
+                        if (activePen != null)
+                            g.DrawPath(activePen, path);
+                    }
+                } else {
+                    if (activeFill != null)
+                        g.FillRectangle(activeFill, x, y, width, height);
+                    if (activePen != null)
+                        g.DrawRectangle(activePen, x, y, width, height);
                 }
-            } else {
-                if (FillBrush != null)
-                    g.FillRectangle(FillBrush, x, y, width, height);
-                if (FramePen != null)
-                    g.DrawRectangle(FramePen, x, y, width, height);
+            } finally {
+                if (!ReferenceEquals(activeFill, FillBrush)) activeFill?.Dispose();
+                if (!ReferenceEquals(activePen, FramePen)) activePen?.Dispose();
             }
         }
 

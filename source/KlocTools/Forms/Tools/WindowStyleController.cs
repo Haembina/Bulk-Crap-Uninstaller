@@ -18,6 +18,8 @@ namespace Klocman.Forms.Tools
     /// </summary>
     public class WindowStyleController
     {
+        public static Action<Form> GlobalFormThemer { get; set; }
+
         private readonly Form _reference;
         private readonly List<Action<bool>> _targets = new();
 

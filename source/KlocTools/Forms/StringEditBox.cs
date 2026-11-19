@@ -14,6 +14,7 @@ namespace Klocman.Forms
         public StringEditBox()
         {
             InitializeComponent();
+            Tools.WindowStyleController.GlobalFormThemer?.Invoke(this);
         }
 
         public static bool ShowDialog(string description, string title, string defaultText,

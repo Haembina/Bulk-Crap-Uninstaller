@@ -36,8 +36,16 @@ namespace UninstallTools.Dialogs
             listView1.FormatRow += (sender, args) =>
             {
                 if (args.Model is StartupEntryBase seb)
-                    args.Item.ForeColor = seb.Disabled ? SystemColors.GrayText : listView1.ForeColor;
+                {
+                    args.Item.UseItemStyleForSubItems = true;
+                    args.Item.BackColor = listView1.BackColor;
+                    var isDark = listView1.BackColor.R * 299 + listView1.BackColor.G * 587 + listView1.BackColor.B * 114 < 145000;
+                    args.Item.ForeColor = seb.Disabled
+                        ? (isDark ? Color.FromArgb(165, 165, 170) : SystemColors.GrayText)
+                        : listView1.ForeColor;
+                }
             };
+            WindowStyleController.GlobalFormThemer?.Invoke(this);
         }
 
         private List<StartupEntryBase> AllItems { get; set; }
